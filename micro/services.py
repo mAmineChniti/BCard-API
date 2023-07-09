@@ -1,6 +1,6 @@
 import spacy
 
-nlp = spacy.load("en_core_web_lg")
+nlp = spacy.load("en_core_web_md")
 
 def process_card(text):
     doc = nlp(text)
