@@ -21,5 +21,3 @@ typing_extensions
 urllib3
 uvicorn
 yarg
-spacy[transformers]
-spacy
