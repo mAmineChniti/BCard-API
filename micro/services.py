@@ -1,38 +1,9 @@
-import re
-
-def extract_name(text):
-    lines = text.split("\n")
-    return lines[0]
-
-def extract_phone_number(text):
-    phone_regex = r"\(?\d{3}\)?[-.\s]?\d{3}[-.\s]?\d{4}"
-    matches = re.findall(phone_regex, text)
-    if matches:
-        return matches[0]
-    return None
-
-def extract_location(text):
-    lines = text.split("\n")
-    location_line = [line for line in lines if re.search(r'\b\d{5}\b', line)]
-    if location_line:
-        return location_line[0]
-    return None
-
-def extract_occupation(text):
-    lines = text.split("\n")
-    occupation_line = [line for line in lines if re.search(r'\b[A-Za-z]+\b\s+Manager', line)]
-    if occupation_line:
-        return occupation_line[0]
-    return None
-
-def extract_other_details(text):
-    lines = text.split("\n")
-    details = lines[1:-1]
-    if details:
-        return "\n".join(details)
-    return None
+import spacy
 
 def process_card(input_text):
+    nlp = spacy.load("en_core_web_sm")
+    doc = nlp(input_text)
+    
     result = {
         "name": None,
         "phone_number": None,
@@ -41,10 +12,29 @@ def process_card(input_text):
         "other_details": None
     }
     
-    result["name"] = extract_name(input_text)
-    result["phone_number"] = extract_phone_number(input_text)
-    result["location"] = extract_location(input_text)
-    result["occupation"] = extract_occupation(input_text)
-    result["other_details"] = extract_other_details(input_text)
+    entities = [ent.text for ent in doc.ents]
+    for entity in entities:
+        if result["name"] is None and entity.istitle():
+            result["name"] = entity
+        elif result["phone_number"] is None and entity.startswith(("(", "+")):
+            result["phone_number"] = entity
+        elif result["location"] is None and entity.endswith(("Street", "Avenue")):
+            result["location"] = entity
+        elif result["occupation"] is None and "Manager" in entity:
+            result["occupation"] = entity
+    
+    details = []
+    for token in doc:
+        if token.pos_ == "NUM":
+            details.append(token.text)
+        elif token.pos_ == "PROPN":
+            details.append(token.text)
+        elif token.like_email:
+            details.append(token.text)
+        elif token.like_url:
+            details.append(token.text)
+    
+    if details:
+        result["other_details"] = "\n".join(details)
     
     return result
