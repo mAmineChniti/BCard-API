@@ -1,4 +1,4 @@
-def Card_serialize(Card) -> dict:
+def card_serialize(Card) -> dict:
     return {
         "user_id": Card.get("user_id"),
         "name": Card.get("name"),
@@ -8,5 +8,5 @@ def Card_serialize(Card) -> dict:
         "other_details": Card.get("other_details")
     }
 
-def Cards_serialize(Cards) -> list:
-    return [Card_serialize(Card) for Card in Cards if Card is not None]
+def cards_serialize(Cards) -> list:
+    return [card_serialize(Card) for Card in Cards if Card is not None]

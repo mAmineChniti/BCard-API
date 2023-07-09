@@ -4,7 +4,7 @@ from fastapi.responses import RedirectResponse
 from micro.services import process_card
 from models.cardmodel import Card
 from config.database import collection_name
-from schemas.cardschema import Cards_serialize
+from schemas.cardschema import cards_serialize
 
 BCardrouter = APIRouter()
 
@@ -43,7 +43,7 @@ def user_cards(user_id: int):
         cards = collection_name.find({"user_id": user_id})
         
         # Serialize the cards
-        serialized_cards = [Cards_serialize(card) for card in cards]
+        serialized_cards = cards_serialize(cards)
         
         return JSONResponse(content=serialized_cards)
     except Exception as e:
