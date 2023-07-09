@@ -24,13 +24,16 @@ def save_card(user_id: int, text: str):
     try:
         result = process_card(text)
 
-        # Store user_id and result in MongoDB
-        document = {"user_id": user_id, "result": result}
-        collection_name.insert_one(document)
+        # Add user_id to the result dictionary
+        result["user_id"] = user_id
+
+        # Store the entire result dictionary in MongoDB
+        collection_name.insert_one(result)
 
         return {"message": "Card saved successfully"}
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
+
 
 # Route to get all cards of a user
 @BCardrouter.get('/cards/')
