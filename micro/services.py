@@ -1,10 +1,38 @@
-import spacy
+import re
 
-nlp = spacy.load("en_core_web_trf")
+def extract_name(text):
+    lines = text.split("\n")
+    return lines[0]
 
-def process_card(text):
-    doc = nlp(text)
-    
+def extract_phone_number(text):
+    phone_regex = r"\(?\d{3}\)?[-.\s]?\d{3}[-.\s]?\d{4}"
+    matches = re.findall(phone_regex, text)
+    if matches:
+        return matches[0]
+    return None
+
+def extract_location(text):
+    lines = text.split("\n")
+    location_line = [line for line in lines if re.search(r'\b\d{5}\b', line)]
+    if location_line:
+        return location_line[0]
+    return None
+
+def extract_occupation(text):
+    lines = text.split("\n")
+    occupation_line = [line for line in lines if re.search(r'\b[A-Za-z]+\b\s+Manager', line)]
+    if occupation_line:
+        return occupation_line[0]
+    return None
+
+def extract_other_details(text):
+    lines = text.split("\n")
+    details = lines[1:-1]
+    if details:
+        return "\n".join(details)
+    return None
+
+def process_card(input_text):
     result = {
         "name": None,
         "phone_number": None,
@@ -13,16 +41,10 @@ def process_card(text):
         "other_details": None
     }
     
-    for entity in doc.ents:
-        if entity.label_ == "PERSON" and not result["name"]:
-            result["name"] = entity.text
-        elif entity.label_ == "PHONE_NUMBER" and not result["phone_number"]:
-            result["phone_number"] = entity.text
-        elif entity.label_ == "GPE" and not result["location"]:
-            result["location"] = entity.text
-        elif entity.label_ == "OCCUPATION" and not result["occupation"]:
-            result["occupation"] = entity.text
-        elif not result["other_details"]:
-            result["other_details"] = entity.text
+    result["name"] = extract_name(input_text)
+    result["phone_number"] = extract_phone_number(input_text)
+    result["location"] = extract_location(input_text)
+    result["occupation"] = extract_occupation(input_text)
+    result["other_details"] = extract_other_details(input_text)
     
     return result
