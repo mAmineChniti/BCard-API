@@ -36,7 +36,7 @@ def save_card(user_id: int, text: str):
 
 
 # Route to get all cards of a user
-@BCardrouter.get('/cards/')
+@BCardrouter.get('/cards')
 def user_cards(user_id: int):
     try:
         # Query MongoDB collection for cards of the specified user_id
