@@ -1,6 +1,6 @@
 import spacy
 
-nlp = spacy.load("custom_model")
+nlp = spacy.load('custom_model')
 
 def process_card(text):
     doc = nlp(text)
