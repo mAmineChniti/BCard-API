@@ -5,6 +5,7 @@ def card_serialize(Card) -> dict:
         "phone_number": Card.get("phone_number"),
         "location": Card.get("location"),
         "occupation": Card.get("occupation"),
+        "email": Card.get("email"),
         "other_details": Card.get("other_details")
     }
 

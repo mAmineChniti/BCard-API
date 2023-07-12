@@ -5,4 +5,5 @@ class Card(BaseModel):
     phone_number: str
     location: str
     occupation: str
+    email: str
     other_details: str
