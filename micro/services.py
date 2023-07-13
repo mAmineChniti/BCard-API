@@ -1,7 +1,7 @@
 import spacy
 import os
 
-model_directory = os.path.join(os.path.dirname(__file__), 'custom_model')
+model_directory = os.path.join(os.path.dirname(__file__), 'BCard_Model_1.1')
 
 # Load the custom model
 nlp = spacy.load(model_directory)
