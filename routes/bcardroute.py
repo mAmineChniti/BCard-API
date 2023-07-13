@@ -2,7 +2,6 @@ from fastapi import APIRouter, HTTPException
 from fastapi.responses import JSONResponse
 from fastapi.responses import RedirectResponse
 from micro.services import process_card
-from models.cardmodel import Card
 from config.database import collection_name
 from schemas.cardschema import cards_serialize
 
