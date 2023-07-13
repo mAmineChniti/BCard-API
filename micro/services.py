@@ -15,6 +15,7 @@ def process_card(text):
         "location": None,
         "occupation": None,
         "email": None,
+        "company": None,
         "other_details": []
     }
     
@@ -29,6 +30,8 @@ def process_card(text):
             result["occupation"] = entity.text
         elif entity.label_ == "EMAIL":
             result["email"] = entity.text
+        elif entity.label_ == "COMPANY":
+            result["company"] = entity.text
         else:
             result["other_details"].append(entity.text)
     

@@ -6,4 +6,5 @@ class Card(BaseModel):
     location: str
     occupation: str
     email: str
+    company: str
     other_details: str
