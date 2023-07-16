@@ -1,6 +1,5 @@
 from fastapi import APIRouter, HTTPException
-from fastapi.responses import JSONResponse
-from fastapi.responses import RedirectResponse
+from fastapi.responses import JSONResponse, RedirectResponse
 from micro.services import process_card
 from config.database import collection_name
 from schemas.cardschema import cards_serialize
@@ -19,12 +18,12 @@ async def status():
 
 # Save text from front in a mongodb database
 @BCardrouter.post('/save_card')
-def save_card(user_id: int, text: str):
+def save_card(user_id: str, text: str):
     try:
         result = process_card(text)
 
         # Add user_id to the result dictionary
-        result["user_id"] = user_id
+        result["_id"] = user_id
 
         # Store the entire result dictionary in MongoDB
         collection_name.insert_one(result)
@@ -36,10 +35,10 @@ def save_card(user_id: int, text: str):
 
 # Route to get all cards of a user
 @BCardrouter.get('/cards')
-def user_cards(user_id: int):
+def user_cards(user_id: str):
     try:
         # Query MongoDB collection for cards of the specified user_id
-        cards = collection_name.find({"user_id": user_id})
+        cards = collection_name.find({"_id": user_id})
         
         # Serialize the cards
         serialized_cards = cards_serialize(cards)
