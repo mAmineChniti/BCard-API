@@ -42,7 +42,6 @@ def user_cards(user_id: str):
         
         # Serialize the cards
         serialized_cards = cards_serialize(cards)
-        
         return JSONResponse(content=serialized_cards)
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
