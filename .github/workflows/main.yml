@@ -10,7 +10,7 @@ jobs:
     runs-on: ubuntu-latest
 
     env:
-      RENDER_TOKEN: ${{ secrets.RENDER_TOKEN }}
+      RENDER_TOKEN: ${{ secrets.RENDER_API_KEY }}
       DBUSER: ${{ secrets.DBUSER }}
       DBPASS: ${{ secrets.DBPASS }}
       DBNAME: ${{ secrets.DBNAME }}
