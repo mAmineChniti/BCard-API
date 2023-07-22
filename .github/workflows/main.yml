@@ -10,7 +10,7 @@ jobs:
     runs-on: ubuntu-latest
 
     env:
-      RENDER_TOKEN: ${{ secrets.RENDER_API_KEY }}
+      RENDER_TOKEN: ${{ secrets.RENDER_TOKEN }}
       DBUSER: ${{ secrets.DBUSER }}
       DBPASS: ${{ secrets.DBPASS }}
       DBNAME: ${{ secrets.DBNAME }}
@@ -19,6 +19,14 @@ jobs:
     steps:
       - name: Checkout code
         uses: actions/checkout@v2
+
+      - name: Debug - Print environment variables
+        run: |
+          echo "DBUSER=${DBUSER}"
+          echo "DBPASS=${DBPASS}"
+          echo "DBNAME=${DBNAME}"
+          echo "COLNAME=${COLNAME}"
+          echo "RENDER_TOKEN=${RENDER_TOKEN}"
 
       - name: Set up Python 3.11.4
         uses: actions/setup-python@v2
