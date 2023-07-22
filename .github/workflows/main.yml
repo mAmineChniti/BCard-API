@@ -10,7 +10,6 @@ jobs:
     runs-on: ubuntu-latest
 
     env:
-      RENDER_TOKEN: ${{ secrets.RENDER_API_KEY }}
       DBUSER: ${{ secrets.DBUSER }}
       DBPASS: ${{ secrets.DBPASS }}
       DBNAME: ${{ secrets.DBNAME }}
@@ -32,9 +31,10 @@ jobs:
         uses: actions/setup-python@v2
         with:
           python-version: 3.11.4
+          upgrade-pip: true
 
       - name: Install dependencies
-        run: pip install --upgrade pip && pip install -r requirements.txt
+        run: pip install --upgrade pip
 
       - name: Build and start the application
         env:
@@ -42,27 +42,4 @@ jobs:
           DBPASS: ${{ env.DBPASS }}
           DBNAME: ${{ env.DBNAME }}
           COLNAME: ${{ env.COLNAME }}
-        run: uvicorn BCard:app --host 0.0.0.0 --port 10000 --reload
-
-      - name: Deploy to Render.com
-        run: |
-          curl -X POST https://api.render.com/v1/services \
-            -H "Authorization: Bearer ${{ env.RENDER_TOKEN }}" \
-            -H "Content-Type: application/json" \
-            -d '{
-              "name": "BCard",
-              "githubRepo": {
-                "repo": "mAmineChniti/BCard-API",
-                "branch": "master",
-                "buildCommand": "pip install -r requirements.txt",
-                "startCommand": "uvicorn BCard:app --host 0.0.0.0 --port 10000",
-                "language": "python",
-                "env": {
-                  "PYTHON_VERSION": "3.11",
-                  "DBUSER": "${{ env.DBUSER }}",
-                  "DBPASS": "${{ env.DBPASS }}",
-                  "DBNAME": "${{ env.DBNAME }}",
-                  "COLNAME": "${{ env.COLNAME }}"
-                }
-              }
-            }'
+        run: uvicorn BCard:app --host 0.0.0.0 --port 10000
