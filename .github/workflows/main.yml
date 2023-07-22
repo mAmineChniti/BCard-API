@@ -25,7 +25,6 @@ jobs:
           echo "DBPASS=${DBPASS}"
           echo "DBNAME=${DBNAME}"
           echo "COLNAME=${COLNAME}"
-          echo "RENDER_TOKEN=${RENDER_TOKEN}"
 
       - name: Set up Python 3.11.4
         uses: actions/setup-python@v2
