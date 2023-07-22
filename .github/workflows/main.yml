@@ -1,0 +1,44 @@
+name: CI/CD with Python 3.11.4 and Render.com
+
+on:
+  push:
+    branches:
+      - master
+
+jobs:
+  build_and_deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      - name: Set up Python 3.11.4
+        uses: actions/setup-python@v2
+        with:
+          python-version: 3.11.4
+
+      - name: Install dependencies
+        run: pip install -r requirements.txt
+
+      - name: Build and start the application
+        run: uvicorn BCard:app --host 0.0.0.0 --port 10000 --reload
+
+      - name: Deploy to Render.com
+        run: |
+          curl -X POST https://api.render.com/v1/services \
+            -H "Authorization: Bearer ${{ secrets.RENDER_API_KEY }}" \
+            -H "Content-Type: application/json" \
+            -d '{
+              "name": "BCard",
+              "githubRepo": {
+                "repo": "mAmineChniti/BCard-API",
+                "branch": "master",
+                "buildCommand": "pip install -r requirements.txt",
+                "startCommand": "uvicorn BCard:app --host 0.0.0.0 --port 10000",
+                "language": "python",
+                "env": {
+                  "PYTHON_VERSION": "3.11"
+                }
+              }
+            }'
