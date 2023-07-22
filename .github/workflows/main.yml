@@ -10,6 +10,7 @@ jobs:
     runs-on: ubuntu-latest
 
     env:
+      RENDER_TOKEN: ${{ secrets.RENDER_TOKEN }}
       DBUSER: ${{ secrets.DBUSER }}
       DBPASS: ${{ secrets.DBPASS }}
       DBNAME: ${{ secrets.DBNAME }}
@@ -28,19 +29,17 @@ jobs:
         run: pip install -r requirements.txt
 
       - name: Build and start the application
+        env:
+          DBUSER: ${{ env.DBUSER }}
+          DBPASS: ${{ env.DBPASS }}
+          DBNAME: ${{ env.DBNAME }}
+          COLNAME: ${{ env.COLNAME }}
         run: uvicorn BCard:app --host 0.0.0.0 --port 10000 --reload
-
-      - name: Set up MongoDB environment variables
-        run: |
-          echo "DBUSER=${DBUSER}" >> $GITHUB_ENV
-          echo "DBPASS=${DBPASS}" >> $GITHUB_ENV
-          echo "DBNAME=${DBNAME}" >> $GITHUB_ENV
-          echo "COLNAME=${COLNAME}" >> $GITHUB_ENV
 
       - name: Deploy to Render.com
         run: |
           curl -X POST https://api.render.com/v1/services \
-            -H "Authorization: Bearer rnd_joF7OLwSCGwJVL3jYFW3pxUs8GYU" \
+            -H "Authorization: Bearer ${{ env.RENDER_TOKEN }}" \
             -H "Content-Type: application/json" \
             -d '{
               "name": "BCard",
@@ -52,10 +51,10 @@ jobs:
                 "language": "python",
                 "env": {
                   "PYTHON_VERSION": "3.11",
-                  "DBUSER": "${{ secrets.DBUSER }}",
-                  "DBPASS": "${{ secrets.DBPASS }}",
-                  "DBNAME": "${{ secrets.DBNAME }}",
-                  "COLNAME": "${{ secrets.COLNAME }}"
+                  "DBUSER": "${{ env.DBUSER }}",
+                  "DBPASS": "${{ env.DBPASS }}",
+                  "DBNAME": "${{ env.DBNAME }}",
+                  "COLNAME": "${{ env.COLNAME }}"
                 }
               }
             }'
