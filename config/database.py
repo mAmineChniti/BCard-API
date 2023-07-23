@@ -3,7 +3,7 @@ from os import environ
 from dotenv import load_dotenv
 from pathlib import Path
 
-dotenv_path = Path('.env')
+dotenv_path = Path('/etc/secrets/.env')
 load_dotenv(dotenv_path=dotenv_path)
 
 username = environ.get("DBUSER")
