@@ -2,7 +2,7 @@ from fastapi import APIRouter, HTTPException
 from fastapi.responses import JSONResponse, RedirectResponse
 from micro.services import process_card
 from config.database import collection_name
-from config.database import redhost
+from config.cache import redis_client
 from schemas.cardschema import cards_serialize
 
 BCardrouter = APIRouter()
