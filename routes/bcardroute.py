@@ -1,21 +1,11 @@
-import redis
 from fastapi import APIRouter, HTTPException
 from fastapi.responses import JSONResponse, RedirectResponse
 from micro.services import process_card
 from config.database import collection_name
+from config.database import redhost
 from schemas.cardschema import cards_serialize
-from os import environ
-from dotenv import load_dotenv
-from pathlib import Path
-
-dotenv_path = Path('/etc/secrets/.env')
-load_dotenv(dotenv_path=dotenv_path)
-redhost = environ.get('REDHOST')
 
 BCardrouter = APIRouter()
-
-# Create a Redis client
-redis_client = redis.Redis(host=redhost, port=6379, decode_responses=True)
 
 # Redirection to documentation page
 @BCardrouter.get("/", include_in_schema=False)
