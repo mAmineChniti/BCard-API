@@ -1,51 +1,68 @@
-name: Python FastAPI CI/CD
+name: CI/CD with Python 3.11.4 and Render.com
 
 on:
   push:
     branches:
       - master
-  pull_request:
 
 jobs:
-  build:
+  build_and_deploy:
     runs-on: ubuntu-latest
 
+    env:
+      RENDER_TOKEN: ${{ secrets.RENDER_TOKEN }}
+      DBUSER: ${{ secrets.MONGODB_USERNAME }}
+      DBPASS: ${{ secrets.MONGODB_PASSWORD }}
+      DBNAME: ${{ secrets.MONGODB_DATABASE }}
+      COLNAME: ${{ secrets.MONGODB_COLLECTION }}
+
     steps:
-    - name: Checkout code
-      uses: actions/checkout@v2
+      - name: Checkout code
+        uses: actions/checkout@v2
 
-    - name: Set up Python
-      uses: actions/setup-python@v2
-      with:
-        python-version: '3.11.4'
+      - name: Debug - Print environment variables
+        run: |
+          echo "DBUSER=${DBUSER}"
+          echo "DBPASS=${DBPASS}"
+          echo "DBNAME=${DBNAME}"
+          echo "COLNAME=${COLNAME}"
+          echo "RENDER_TOKEN=${RENDER_TOKEN}"
 
-    - name: Install dependencies
-      run: |
-        python -m pip install --upgrade pip
-        pip install -r requirements.txt
+      - name: Set up Python 3.11.4
+        uses: actions/setup-python@v2
+        with:
+          python-version: 3.11.4
 
-    - name: Set up environment variables
-      env:
-        DBUSER: ${{ secrets.MONGODB_USERNAME }}
-        DBPASS: ${{ secrets.MONGODB_PASSWORD }}
-        DBNAME: ${{ secrets.MONGODB_DATABASE }}
-        COLNAME: ${{ secrets.MONGODB_COLLECTION }}
-        PORT: ${{ secrets.PORT}}
-        RENDER_TOKEN: ${{ secrets.RENDER_TOKEN}}
-      run: echo "Environment variables set."
-      
-    - name: Deploy FastAPI with uvicorn
-      if: success()
-      run: |
-        echo "DBUSER=$DBUSER" > .env
-        echo "DBPASS=$DBPASS" >> .env
-        echo "DBNAME=$DBNAME" >> .env
-        echo "COLNAME=$COLNAME" >> .env
-        uvicorn BCard:app --host 0.0.0.0 --port $PORT --env-file .env
+      - name: Install dependencies
+        run: pip install -r requirements.txt
 
-    - name: Trigger Deployment on Render.com
-      if: success()
-      env:
-        RENDER_TOKEN: ${{ secrets.RENDER_TOKEN }}
-      run: |
-        curl -X POST "https://api.render.com/v1/deploys" -H "Authorization: Bearer $RENDER_TOKEN" -H "Content-Type: application/json" -d '{"branch": "master"}'
+      - name: Build and start the application
+        env:
+          DBUSER: ${{ env.DBUSER }}
+          DBPASS: ${{ env.DBPASS }}
+          DBNAME: ${{ env.DBNAME }}
+          COLNAME: ${{ env.COLNAME }}
+        run: uvicorn BCard:app --host 0.0.0.0 --port 10000 --reload
+
+      - name: Deploy to Render.com
+        run: |
+          curl -X POST https://api.render.com/v1/services \
+            -H "Authorization: Bearer ${{ env.RENDER_TOKEN }}" \
+            -H "Content-Type: application/json" \
+            -d '{
+              "name": "BCard",
+              "githubRepo": {
+                "repo": "mAmineChniti/BCard-API",
+                "branch": "master",
+                "buildCommand": "pip install -r requirements.txt",
+                "startCommand": "uvicorn BCard:app --host 0.0.0.0 --port 10000",
+                "language": "python",
+                "env": {
+                  "PYTHON_VERSION": "3.11",
+                  "DBUSER": "${{ env.DBUSER }}",
+                  "DBPASS": "${{ env.DBPASS }}",
+                  "DBNAME": "${{ env.DBNAME }}",
+                  "COLNAME": "${{ env.COLNAME }}"
+                }
+              }
+            }'
