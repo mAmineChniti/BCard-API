@@ -11,10 +11,10 @@ jobs:
 
     env:
       RENDER_TOKEN: ${{ secrets.RENDER_TOKEN }}
-      DBUSER: ${{ secrets.MONGODB_USERNAME }}
-      DBPASS: ${{ secrets.MONGODB_PASSWORD }}
-      DBNAME: ${{ secrets.MONGODB_DATABASE }}
-      COLNAME: ${{ secrets.MONGODB_COLLECTION }}
+      DBUSER: ${{ secrets.DBUSER }}
+      DBPASS: ${{ secrets.DBPASS }}
+      DBNAME: ${{ secrets.DBNAME }}
+      COLNAME: ${{ secrets.COLNAME }}
 
     steps:
       - name: Checkout code
@@ -44,7 +44,8 @@ jobs:
           COLNAME: ${{ env.COLNAME }}
         run: uvicorn BCard:app --host 0.0.0.0 --port 10000 --reload
 
-      - name: Deploy to Render.com
+        # Deploy to Render.com after successful build
+        if: ${{ success() }}
         run: |
           curl -X POST https://api.render.com/v1/services \
             -H "Authorization: Bearer ${{ env.RENDER_TOKEN }}" \
@@ -58,11 +59,7 @@ jobs:
                 "startCommand": "uvicorn BCard:app --host 0.0.0.0 --port 10000",
                 "language": "python",
                 "env": {
-                  "PYTHON_VERSION": "3.11",
-                  "DBUSER": "${{ env.DBUSER }}",
-                  "DBPASS": "${{ env.DBPASS }}",
-                  "DBNAME": "${{ env.DBNAME }}",
-                  "COLNAME": "${{ env.COLNAME }}"
+                  "PYTHON_VERSION": "3.11"
                 }
               }
             }'
