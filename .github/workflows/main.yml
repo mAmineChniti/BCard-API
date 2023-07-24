@@ -37,7 +37,11 @@ jobs:
     - name: Deploy FastAPI with uvicorn
       if: success()
       run: |
-        uvicorn BCard:app --host 0.0.0.0 --port $PORT
+        echo "DBUSER=$DBUSER" > .env
+        echo "DBPASS=$DBPASS" >> .env
+        echo "DBNAME=$DBNAME" >> .env
+        echo "COLNAME=$COLNAME" >> .env
+        uvicorn BCard:app --host 0.0.0.0 --port $PORT --env-file .env
 
     - name: Trigger Deployment on Render.com
       if: success()
