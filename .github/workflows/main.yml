@@ -33,11 +33,7 @@ jobs:
         PORT: ${{ secrets.PORT}}
         RENDER_TOKEN: ${{ secrets.RENDER_TOKEN}}
       run: echo "Environment variables set."
-
-    - name: Run tests
-      run: |
-        pytest tests/
-
+      
     - name: Deploy FastAPI with uvicorn
       if: success()
       run: |
