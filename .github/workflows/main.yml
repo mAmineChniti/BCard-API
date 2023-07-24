@@ -42,7 +42,7 @@ jobs:
           DBPASS: ${{ env.DBPASS }}
           DBNAME: ${{ env.DBNAME }}
           COLNAME: ${{ env.COLNAME }}
-        run: uvicorn BCard:app --host 0.0.0.0 --port 10000 --reload
+        run: uvicorn BCard:app --host 0.0.0.0 --port 10000 --reload &
 
       # Deploy to Render.com after successful build
       - name: Deploy to Render.com
