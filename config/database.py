@@ -11,8 +11,9 @@ username = environ.get("DBUSER")
 password = environ.get("DBPASS")
 dbname = environ.get("DBNAME")
 col_name = environ.get("COLNAME")
+host = environ.get("HOST")
 
 # Connect to MongoDB using the retrieved connection details
-client = MongoClient(f"mongodb+srv://{username}:{password}@cluster0.taxfc6l.mongodb.net/?retryWrites=true&w=majority")
+client = MongoClient(f"mongodb+srv://{username}:{password}@{host}")
 db = client[dbname]
 collection_name = db[col_name]
