@@ -7,13 +7,13 @@ dotenv_path = Path('/etc/secrets/.env')
 load_dotenv(dotenv_path=dotenv_path)
 
 # Get the MongoDB connection details from environment variables
-username = environ.get("DBUSER")
-password = environ.get("DBPASS")
-dbname = environ.get("DBNAME")
-col_name = environ.get("COLNAME")
+username = environ.get("USER")
+password = environ.get("PASS")
+database = environ.get("BASE")
+collection = environ.get("COLLECTION")
 host = environ.get("HOST")
 
 # Connect to MongoDB using the retrieved connection details
 client = MongoClient(f"mongodb+srv://{username}:{password}@{host}")
-db = client[dbname]
-collection_name = db[col_name]
+db = client[database]
+bcards_collection = db[collection]

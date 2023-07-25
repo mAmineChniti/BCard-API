@@ -1,7 +1,7 @@
 from fastapi import APIRouter, HTTPException
 from fastapi.responses import JSONResponse, RedirectResponse
 from micro.services import process_card
-from config.database import collection_name
+from config.database import bcards_collection
 from config.cache import redis_client
 from schemas.cardschema import cards_serialize
 
@@ -27,7 +27,7 @@ def save_card(user_id: str, text: str):
         result["_id"] = user_id
 
         # Store the entire result dictionary in MongoDB
-        collection_name.insert_one(result)
+        bcards_collection.insert_one(result)
 
         # Invalidate the cache for the user_id, as the data has changed
         redis_client.delete(user_id)
@@ -47,7 +47,7 @@ def user_cards(user_id: str):
             return JSONResponse(content=cached_data)
 
         # Query MongoDB collection for cards of the specified user_id
-        cards = collection_name.find({"_id": user_id})
+        cards = bcards_collection.find({"_id": user_id})
 
         # Serialize the cards
         serialized_cards = cards_serialize(cards)
