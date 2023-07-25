@@ -3,8 +3,9 @@ from dotenv import load_dotenv
 import redis
 
 load_dotenv('/etc/secrets/.env')
-redhost = environ.get('REDHOST')
+reduser = environ.get('REDUSER')
+redpassword = environ.get('REDPASSWORD')
+redhostname = environ.get('REDHOSTNAME')
 redport = environ.get('REDPORT')
-
 # Create a Redis client
-redis_client = redis.Redis(host=redhost, port=redport, decode_responses=True)
+redis_client = redis.Redis(host=f"rediss://{reduser}:{redpassword}@{redhostname}", port=redport, decode_responses=True)
