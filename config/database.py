@@ -1,8 +1,10 @@
 from pymongo import MongoClient
 from os import environ
 from dotenv import load_dotenv
+from pathlib import Path
 
-load_dotenv('/etc/secrets/.env')
+dotenv_path = Path('/etc/secrets/.env')
+load_dotenv(dotenv_path=dotenv_path)
 
 # Get the MongoDB connection details from environment variables
 username = environ.get("DBUSER")
