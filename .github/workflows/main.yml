@@ -3,7 +3,7 @@ name: CI/CD for FastAPI API
 on:
   push:
     branches:
-      - master
+      - main
 
 jobs:
   deploy:
@@ -17,12 +17,13 @@ jobs:
       - name: Set up Python
         uses: actions/setup-python@v2
         with:
-          python-version: '3.11.4'  # Replace 'x' with the appropriate version of Python
+          python-version: '3.11.4'
 
       - name: Install dependencies
         run: pip install --upgrade pip && pip install -r requirements.txt
 
       - name: Deploy with Uvicorn
+        run: uvicorn BCard:app --host 0.0.0.0 --port 8000
         env:
           USER: ${{ env.USER }}
           PASS: ${{ env.PASS }}
@@ -33,4 +34,3 @@ jobs:
           REDHOSTNAME: ${{ env.REDHOSTNAME }}
           REDPORT: ${{ env.REDPORT }}
           HOST: ${{ env.HOST }}
-        run: uvicorn BCard:app --host 0.0.0.0 --port 8000
