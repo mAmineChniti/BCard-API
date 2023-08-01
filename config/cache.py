@@ -1,10 +1,8 @@
 from os import environ
 from dotenv import load_dotenv
-from redis import Redis
-from pathlib import Path
+from redis import redis
 
-dotenv_path = Path('/etc/secrets/.env')
-load_dotenv(dotenv_path=dotenv_path)
+load_dotenv()
 
 reduser = environ.get('REDUSER')
 redpassword = environ.get('REDPASSWORD')
