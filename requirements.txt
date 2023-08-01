@@ -1,6 +1,5 @@
 fastapi
 pydantic
-pymongo
 python-dotenv
 spacy
 uvicorn
