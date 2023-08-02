@@ -4,17 +4,16 @@ from micro.services import process_card
 from config.database import bcards_collection
 from config.cache import redis_client
 from schemas.cardschema import cards_serialize
-import asyncio
 
 BCardrouter = APIRouter()
 
 # Redirection to documentation page
-@BCardrouter.get("/", include_in_schema=False)
+@BCardrouter.get("/", include_in_schema=False, status_code=308)
 def redirect_to_docs():
     return RedirectResponse(url='/docs')
 
 # API Status check
-@BCardrouter.get("/status", include_in_schema=False)
+@BCardrouter.get("/status", include_in_schema=False, status_code=200)
 async def status():
     try:
         return {"status": "ok"}
@@ -22,7 +21,7 @@ async def status():
         raise HTTPException(status_code=500, detail=str(e))
 
 # Save text from front in a MongoDB database
-@BCardrouter.post('/save_card')
+@BCardrouter.post('/save_card', status_code=201)
 async def save_card(user_id: str, text: str):
     try:
         result = await process_card(text)
@@ -42,7 +41,7 @@ async def save_card(user_id: str, text: str):
 
 
 # Route to get all cards of a user with Redis caching
-@BCardrouter.get('/cards')
+@BCardrouter.get('/cards', status_code=200)
 async def user_cards(user_id: str):
     try:
         # Check if the data is already cached in Redis
