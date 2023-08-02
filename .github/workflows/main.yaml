@@ -39,7 +39,7 @@ jobs:
           REDPASSWORD: ${{ secrets.REDPASSWORD }}
           REDHOSTNAME: ${{ secrets.REDHOSTNAME }}
           REDPORT: ${{ secrets.REDPORT }}
-        run: uvicorn Gordian:app --host 0.0.0.0 --port $PORT &
+        run: uvicorn BCard:app --host 0.0.0.0 --port $PORT &
 
       - name: Test API Deployment
         run: |
