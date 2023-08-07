@@ -10,7 +10,7 @@ on:
 
 jobs:
   test_and_deploy:
-    name: Setup
+    name: Setup -> Test -> Deploy
     runs-on: ubuntu-latest
 
     steps:
