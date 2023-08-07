@@ -22,7 +22,7 @@ jobs:
         with:
           python-version: 3.11
 
-      - name: Install dependencies
+      - name: Create environment & Install dependencies
         run: make
 
       - name: Deploy API for Testing
