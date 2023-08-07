@@ -1,10 +1,10 @@
-import spacy
-import os
+from spacy import load
+from os import path
 
-model_directory = os.path.join(os.path.dirname(__file__), 'BCard_Model_1.1')
+model_directory = path.join(os.path.dirname(__file__), 'BCard_Model_1.1')
 
 # Load the custom model
-nlp = spacy.load(model_directory)
+nlp = load(model_directory)
 
 def process_card(text):
     doc = nlp(text)
