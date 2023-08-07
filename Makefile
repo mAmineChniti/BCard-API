@@ -1,5 +1,7 @@
 # Makefile for setting up a virtual environment and installing dependencies
 
+all: venv activate upgrade-pip install-deps
+
 # Create a virtual environment
 venv:
 	python -m venv venv
@@ -17,4 +19,4 @@ install-deps: activate upgrade-pip
 	pip install -r requirements.txt
 
 # Phony targets to ensure these rules are always executed
-.PHONY: venv activate upgrade-pip install-deps
+.PHONY: all
